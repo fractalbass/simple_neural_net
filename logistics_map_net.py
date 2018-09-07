@@ -8,7 +8,7 @@
 # Miles R. Porter, Painted Harmony Group
 # This code is free to use and distribute
 # *****************************************
-
+from pympler import tracker
 import numpy
 import pandas
 from keras.models import Model, Sequential
@@ -25,6 +25,7 @@ Y = dataset[:, 1]
 
 
 # Set up the network
+
 def baseline_model():
 
     the_model = Sequential()
@@ -43,29 +44,33 @@ def baseline_model():
 
 
 # Do the work
+
+tr = tracker.SummaryTracker()
+
+
 model = baseline_model()
-results = model.fit(X, Y, epochs=1000, batch_size=2, verbose=1)
+results = model.fit(X, Y, epochs=1000, batch_size=2, verbose=0)
 print("Training is complete.\n")
 
-pyplot.subplot(2, 1, 1)
-pyplot.title("Error")
-pyplot.plot(results.history['loss'])
+#pyplot.subplot(2, 1, 1)
+#pyplot.title("Error")
+#pyplot.plot(results.history['loss'])
 
 # Make predictions
 
 #newdata = numpy.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 newdata = numpy.random.rand(1,100)[0]
 
-prediction = model.predict(newdata, batch_size=1, verbose=1)
-print("The prediction is:{0}".format(prediction))
+prediction = model.predict(newdata, batch_size=1, verbose=0)
+#print("The prediction is:{0}".format(prediction))
 
-
+tr.print_diff()
 
 # Plot the predicted and expected results
 expected = newdata * 4.0 * (1.0 - newdata)
 
-pyplot.subplot(2, 1, 2)
-pyplot.title("Results")
-pyplot.scatter(newdata, prediction, s=1, color="red")
-pyplot.scatter(newdata, expected, s=1, color="blue")
-pyplot.show()
+#pyplot.subplot(2, 1, 2)
+#pyplot.title("Results")
+#pyplot.scatter(newdata, prediction, s=1, color="red")
+#pyplot.scatter(newdata, expected, s=1, color="blue")
+#pyplot.show()
