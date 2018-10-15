@@ -8,21 +8,30 @@
 # Miles R. Porter, Painted Harmony Group
 # This code is free to use and distribute
 # *****************************************
+import tensorflow as tf
+import numpy as np
+np.random.seed(42)
 
-import numpy
-import pandas
-from keras.models import Model, Sequential
-from keras.layers import Dense, Input
-from matplotlib import pyplot
+from tensorflow import set_random_seed
+set_random_seed(2)
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+import pandas as pd
+from matplotlib import pyplot as plt
+from datetime import datetime
+
+
 
 # load dataset
-dataframe = pandas.read_csv("logistics.csv", delim_whitespace=True, header=None)
-dataset = dataframe.values
+df = pd.read_csv("logistics_10k.csv", header=1, names=['n','n+1'])
+
 
 # split into input (X) and output (Y) variables
 
-X = dataset[:, 0]
-Y = dataset[:, 1]
+X = df['n']
+Y = df['n+1']
 
 
 # Set up the network
@@ -30,7 +39,11 @@ Y = dataset[:, 1]
 def neural_network_model():
 
     the_model = Sequential()
-    the_model.add(Dense(30, activation='sigmoid', input_dim=1))
+    the_model.add(Dense(5, activation='relu', input_dim=1))
+    the_model.add(Dense(500, activation='relu', input_dim=1))
+    the_model.add(Dense(1200, activation='relu', input_dim=1))
+    the_model.add(Dense(500, activation='relu', input_dim=1))
+    the_model.add(Dense(5, activation='relu', input_dim=1))
     the_model.add(Dense(1))
     the_model.summary()
     the_model.compile(optimizer='rmsprop',
@@ -39,28 +52,31 @@ def neural_network_model():
 
 
 model = neural_network_model()
-results = model.fit(X, Y, epochs=1000, batch_size=2, verbose=0)
+st = datetime.now()
+results = model.fit(X, Y, epochs=25, batch_size=16, verbose=1)
+et = datetime.now()
 print("Training is complete.\n")
+print("\n\nTraining time: {}\n\n".format(et-st))
 
-pyplot.subplot(2, 1, 1)
-pyplot.title("Error")
-pyplot.plot(results.history['loss'])
+plt.subplot(2, 1, 1)
+plt.title("Error")
+plt.plot(results.history['loss'])
 
 # Make predictions
 
-inputs = numpy.random.rand(1,100)[0]
+inputs = np.random.rand(1, 100)[0]
 
 prediction = model.predict(inputs, batch_size=1, verbose=0)
 
 # Plot the predicted and expected results
 expected = inputs * 4.0 * (1.0 - inputs)
 
-pyplot.subplot(2, 1, 2)
-pyplot.title("Results")
+plt.subplot(2, 1, 2)
+plt.title("Results")
 for i in range(0, len(inputs)):
     p = prediction[i]
     e = expected[i]
-    pyplot.scatter(i, p, s=1, color="red")
-    pyplot.scatter(i, e, s=1, color="blue")
+    plt.scatter(i, p, s=1, color="red")
+    plt.scatter(i, e, s=1, color="blue")
 
-pyplot.show()
+plt.show()

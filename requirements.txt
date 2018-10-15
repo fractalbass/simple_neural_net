@@ -1,0 +1,5 @@
+pandas
+numpy
+#tensorflow==1.10
+tensorflow_gpu==1.10
+matplotlib
