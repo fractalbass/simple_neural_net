@@ -10,10 +10,13 @@
 # *****************************************
 import tensorflow as tf
 import numpy as np
+import os
 np.random.seed(42)
 
-from tensorflow import set_random_seed
-set_random_seed(2)
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
+#from tensorflow.random import set_random_seed
+#set_random_seed(42)
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
